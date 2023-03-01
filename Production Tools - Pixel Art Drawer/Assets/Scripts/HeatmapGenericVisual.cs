@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HeatmapBoolVisual : MonoBehaviour
+public class HeatmapGenericVisual : MonoBehaviour
 {
-    private GridClass<bool> grid;
+    private GridClass<HeatmapGridObject> grid;
     private Mesh mesh;
 
     private bool updateMesh;
@@ -15,7 +15,7 @@ public class HeatmapBoolVisual : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    public void SetGrid(GridClass<bool> grid)
+    public void SetGrid(GridClass<HeatmapGridObject> grid)
     {
         this.grid = grid;
         UpdateHeatmapVisual();
@@ -23,7 +23,7 @@ public class HeatmapBoolVisual : MonoBehaviour
         grid.OnGridValueChanged += GridOnGridValueChanged;
     }
 
-    private void GridOnGridValueChanged(object sender, GridClass<bool>.OnGridObjectChangedEventArgs e)
+    private void GridOnGridValueChanged(object sender, GridClass<HeatmapGridObject>.OnGridObjectChangedEventArgs e)
     {
         updateMesh = true;
     }
@@ -49,9 +49,9 @@ public class HeatmapBoolVisual : MonoBehaviour
 
                 Vector3 quadSize = new Vector3(1, 1) * grid.GetCellSize();
 
-                bool gridValue = grid.GetGridObject(x, y);
+                HeatmapGridObject gridObject = grid.GetGridObject(x, y);
 
-                float gridValueNormalized = gridValue ? 1f : 0f;
+                float gridValueNormalized = gridObject.GetValueNormalized();
 
                 Vector2 gridValueUv = new Vector2(gridValueNormalized, 0f);
 
