@@ -19,7 +19,7 @@ public class Testing : MonoBehaviour
     private void Start()
     {
         //grid = new GridClass<HeatmapGridObject>(gridWidth, gridHeigth, cellSize, gridOriginPosition, (GridClass<HeatmapGridObject> g, int x, int y) => new HeatmapGridObject(g, x, y));
-        stringGrid = new GridClass<StringGridObject>(gridWidth, gridHeigth, cellSize, gridOriginPosition, (GridClass<StringGridObject> g, int x, int y) => new StringGridObject(g, x, y));
+        //stringGrid = new GridClass<StringGridObject>(gridWidth, gridHeigth, cellSize, gridOriginPosition, (GridClass<StringGridObject> g, int x, int y) => new StringGridObject(g, x, y));
 
         //heatmapVisual.SetGrid(grid);
         //heatmapBoolVisual.SetGrid(grid);
@@ -40,31 +40,31 @@ public class Testing : MonoBehaviour
         //    }
         //}
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            stringGrid.GetGridObject(position).AddLetter("A");
-        }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            stringGrid.GetGridObject(position).AddLetter("B");
-        }
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            stringGrid.GetGridObject(position).AddLetter("C");
-        }
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    stringGrid.GetGridObject(position).AddLetter("A");
+        //}
+        //if (Input.GetKeyDown(KeyCode.B))
+        //{
+        //    stringGrid.GetGridObject(position).AddLetter("B");
+        //}
+        //if (Input.GetKeyDown(KeyCode.C))
+        //{
+        //    stringGrid.GetGridObject(position).AddLetter("C");
+        //}
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            stringGrid.GetGridObject(position).AddNumber("1");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            stringGrid.GetGridObject(position).AddNumber("2");
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            stringGrid.GetGridObject(position).AddNumber("3");
-        }
+        //if (Input.GetKeyDown(KeyCode.Alpha1))
+        //{
+        //    stringGrid.GetGridObject(position).AddNumber("1");
+        //}
+        //if (Input.GetKeyDown(KeyCode.Alpha2))
+        //{
+        //    stringGrid.GetGridObject(position).AddNumber("2");
+        //}
+        //if (Input.GetKeyDown(KeyCode.Alpha3))
+        //{
+        //    stringGrid.GetGridObject(position).AddNumber("3");
+        //}
     }
 }
 
