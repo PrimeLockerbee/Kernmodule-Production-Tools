@@ -5,6 +5,7 @@ using UnityEngine;
 public class PixelArtDrawSystem : MonoBehaviour
 {
     [SerializeField] private PixelArtDrawingVisual pixelArtDrawingSystemVisual;
+    [SerializeField] private Texture2D colorTexture2D;
     private GridClass<GridObject> grid;
 
     private Vector2 colorUV;
@@ -33,11 +34,38 @@ public class PixelArtDrawSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            colorUV = new Vector2(0, .3f);
+            colorUV = new Vector2(.3f, 1f);
         }
         if (Input.GetKeyDown(KeyCode.U))
         {
             colorUV = new Vector2(0, 0);
+        }
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            SaveImage();
+        }
+    }
+
+    private void SaveImage()
+    {
+        Texture2D texture2D = new Texture2D(grid.GetWidth(), grid.GetHeigth(), TextureFormat.ARGB32, false);
+
+        for (int x = 0; x < grid.GetWidth(); x++)
+        {
+            for (int y = 0; y < grid.GetHeigth(); y++)
+            {
+                GridObject gridObject = grid.GetGridObject(x, y);
+                Vector2 gridUV00, gridUV11;
+
+                gridUV00 = gridObject.GetColorUV();
+                gridUV11 = gridObject.GetColorUV();
+
+                int pixelX = (int)(gridObject.GetColorUV().x * colorTexture2D.width);
+                int pixelY = (int)(gridObject.GetColorUV().y * colorTexture2D.height);
+
+                colorTexture2D.GetPixel(pixelX, pixelY);
+            }
         }
     }
 
