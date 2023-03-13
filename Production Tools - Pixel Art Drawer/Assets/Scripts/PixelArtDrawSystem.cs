@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 public class PixelArtDrawSystem : MonoBehaviour
 {
@@ -56,17 +57,20 @@ public class PixelArtDrawSystem : MonoBehaviour
             for (int y = 0; y < grid.GetHeigth(); y++)
             {
                 GridObject gridObject = grid.GetGridObject(x, y);
-                Vector2 gridUV00, gridUV11;
-
-                gridUV00 = gridObject.GetColorUV();
-                gridUV11 = gridObject.GetColorUV();
 
                 int pixelX = (int)(gridObject.GetColorUV().x * colorTexture2D.width);
                 int pixelY = (int)(gridObject.GetColorUV().y * colorTexture2D.height);
+                Color pixelColor = colorTexture2D.GetPixel(pixelX, pixelY);
 
-                colorTexture2D.GetPixel(pixelX, pixelY);
+                texture2D.SetPixel(x, y, pixelColor);
             }
         }
+
+        texture2D.Apply();
+
+        byte[] byteArray =  texture2D.EncodeToPNG();
+
+        File.WriteAllBytes(Application.dataPath + "/pixelArt.png", byteArray);
     }
 
     public class GridObject
