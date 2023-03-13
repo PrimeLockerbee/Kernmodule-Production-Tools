@@ -119,7 +119,7 @@ public class PixelArtDrawSystem : MonoBehaviour
 
     public void Load()
     {
-        Texture2D texture2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+        Texture2D texture2D = new Texture2D(grid.GetWidth(), grid.GetHeigth(), TextureFormat.ARGB32, false);
         texture2D.filterMode = FilterMode.Point;
 
         byte[] byteArray = File.ReadAllBytes(Application.dataPath + "/pixelart.png");

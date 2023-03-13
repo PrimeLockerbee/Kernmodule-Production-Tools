@@ -10,17 +10,14 @@ public class PixekArtDrawingUI : MonoBehaviour
 
     private Image selectedColorImage;
 
-    private void Awake()
+    private void Start()
     {
         transform.Find("SmallButton").GetComponent<Button>().onClick.AddListener(() => { PixelArtDrawSystem.Instance.SetCursorSize(PixelArtDrawSystem.CursorSize.Small); });
         transform.Find("MediumButton").GetComponent<Button>().onClick.AddListener(() => { PixelArtDrawSystem.Instance.SetCursorSize(PixelArtDrawSystem.CursorSize.Medium); });
         transform.Find("LargeButton").GetComponent<Button>().onClick.AddListener(() => { PixelArtDrawSystem.Instance.SetCursorSize(PixelArtDrawSystem.CursorSize.Large); });
 
         selectedColorImage = transform.Find("SelectedColor").GetComponent<Image>();
-    }
 
-    private void Start()
-    {
         PixelArtDrawSystem.Instance.OnColorChanged += PixelArtDraw_OnColorChanged;
     }
 
