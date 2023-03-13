@@ -20,7 +20,7 @@ public class HeatmapGenericVisual : MonoBehaviour
         this.grid = grid;
         UpdateHeatmapVisual();
 
-        grid.OnGridValueChanged += GridOnGridValueChanged;
+        grid.OnGridObjectChanged += GridOnGridValueChanged;
     }
 
     private void GridOnGridValueChanged(object sender, GridClass<HeatmapGridObject>.OnGridObjectChangedEventArgs e)

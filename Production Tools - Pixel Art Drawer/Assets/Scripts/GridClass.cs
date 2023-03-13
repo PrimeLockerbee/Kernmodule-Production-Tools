@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GridClass<GridObject>
 {
-    public event EventHandler<OnGridObjectChangedEventArgs> OnGridValueChanged;
+    public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;
     public class OnGridObjectChangedEventArgs : EventArgs
     {
         public int x;
@@ -40,7 +40,7 @@ public class GridClass<GridObject>
             }
         }
 
-        bool showDebug = true;
+        bool showDebug = false;
         if (showDebug)
         {
             TextMesh[,] debugTextArray = new TextMesh[width, height];
@@ -56,7 +56,7 @@ public class GridClass<GridObject>
             Debug.DrawLine(GetWorldPosition(0, height), GetWorldPosition(width, height), Color.white, 100f);
             Debug.DrawLine(GetWorldPosition(width, 0), GetWorldPosition(width, height), Color.white, 100f);
 
-            OnGridValueChanged += (object sender, OnGridObjectChangedEventArgs eventArgs) =>
+            OnGridObjectChanged += (object sender, OnGridObjectChangedEventArgs eventArgs) =>
             {
                 debugTextArray[eventArgs.x, eventArgs.y].text = gridArray[eventArgs.x, eventArgs.y]?.ToString();
             };
@@ -83,7 +83,7 @@ public class GridClass<GridObject>
         return cellSize;
     }
 
-    private void GetXY(Vector3 worldPosition, out int x, out int y)
+    public void GetXY(Vector3 worldPosition, out int x, out int y)
     {
         x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
         y = Mathf.FloorToInt((worldPosition - originPosition).y / cellSize);
@@ -93,19 +93,19 @@ public class GridClass<GridObject>
     {
         if(x >= 0 && y>= 0 && x < width && y < height)
         {
-            if (OnGridValueChanged!= null)
+            if (OnGridObjectChanged != null)
             {
                 gridArray[x, y] = val;
-                OnGridValueChanged(this, new OnGridObjectChangedEventArgs { x = x, y = y });
+                OnGridObjectChanged(this, new OnGridObjectChangedEventArgs { x = x, y = y });
             }
         }  
     }
 
     public void TriggerGridObjectChanged(int x, int y)
     {
-        if (OnGridValueChanged != null)
+        if (OnGridObjectChanged != null)
         {
-            OnGridValueChanged(this, new OnGridObjectChangedEventArgs { x = x, y = y });
+            OnGridObjectChanged(this, new OnGridObjectChangedEventArgs { x = x, y = y });
         }
     }
 

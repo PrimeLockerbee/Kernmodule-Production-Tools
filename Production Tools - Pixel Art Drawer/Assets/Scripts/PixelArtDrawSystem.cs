@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class PixelArtDrawSystem : MonoBehaviour
 {
+    [SerializeField] private PixelArtDrawingVisual pixelArtDrawingSystemVisual;
     private GridClass<GridObject> grid;
+
+    private Vector2 colorUV;
 
     void Awake()
     {
         grid = new GridClass<GridObject>(10, 10, 1f, Vector3.zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
+    }
+
+    private void Start()
+    {
+        pixelArtDrawingSystemVisual.SetGrid(grid);
     }
 
     private void Update()
@@ -16,16 +24,29 @@ public class PixelArtDrawSystem : MonoBehaviour
         if(Input.GetMouseButtonDown(0))
         {
             Vector3 mousePosition = Utils.GetMouseWorldPosition();
-            grid.GetGridObject(mousePosition).SetColor(Color.red);
+            grid.GetGridObject(mousePosition).SetColorUV(colorUV);
+        }
+
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            colorUV = new Vector2(0, 1);
+        }
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            colorUV = new Vector2(0, .3f);
+        }
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            colorUV = new Vector2(0, 0);
         }
     }
 
-    private class GridObject
+    public class GridObject
     {
         private GridClass<GridObject> grid;
         private int x;
         private int y;
-        private Color color;
+        private Vector2 colorUV;
 
         public GridObject(GridClass<GridObject> grid, int x, int y)
         {
@@ -34,15 +55,20 @@ public class PixelArtDrawSystem : MonoBehaviour
             this.y = y;
         }
 
-        public void SetColor(Color color)
+        public void SetColorUV(Vector2 colorUV)
         {
-            this.color = color;
+            this.colorUV = colorUV;
             grid.TriggerGridObjectChanged(x, y);
+        }
+
+        public Vector2 GetColorUV()
+        {
+            return colorUV;
         }
 
         public override string ToString()
         {
-            return ((int)color.r).ToString();
+            return ((int)colorUV.x).ToString();
         }
     }
 }
