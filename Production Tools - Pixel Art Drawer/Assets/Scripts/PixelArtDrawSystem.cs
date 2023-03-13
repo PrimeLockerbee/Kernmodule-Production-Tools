@@ -9,7 +9,7 @@ public class PixelArtDrawSystem : MonoBehaviour
     [SerializeField] private Texture2D colorTexture2D;
     private GridClass<GridObject> grid;
 
-    [SerializeField] MeshRenderer TestGrid;
+    //[SerializeField] MeshRenderer TestGrid;
 
     private Vector2 colorUV;
 
@@ -48,10 +48,10 @@ public class PixelArtDrawSystem : MonoBehaviour
         {
             SaveImage();
         }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            LoadImage();
-        }
+        //if (Input.GetKeyDown(KeyCode.O))
+        //{
+        //    LoadImage();
+        //}
     }
 
     private void SaveImage()
@@ -79,16 +79,16 @@ public class PixelArtDrawSystem : MonoBehaviour
         File.WriteAllBytes(Application.dataPath + "/pixelArt.png", byteArray);
     }
 
-    private void LoadImage()
-    {
-        Texture2D texture2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-        texture2D.filterMode = FilterMode.Point;
+    //private void LoadImage()
+    //{
+    //    Texture2D texture2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+    //    texture2D.filterMode = FilterMode.Point;
 
-        byte[] byteArray = File.ReadAllBytes(Application.dataPath + "/pixelart.png");
-        texture2D.LoadImage(byteArray);
+    //    byte[] byteArray = File.ReadAllBytes(Application.dataPath + "/pixelart.png");
+    //    texture2D.LoadImage(byteArray);
 
-        TestGrid.material.mainTexture = texture2D;
-    }
+    //    TestGrid.material.mainTexture = texture2D;
+    //}
 
     public class GridObject
     {
