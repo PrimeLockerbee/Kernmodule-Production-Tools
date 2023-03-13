@@ -1,62 +1,100 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using UnityEngine.UI;
 
 public class PixelArtDrawSystem : MonoBehaviour
 {
-    [SerializeField] private PixelArtDrawingVisual pixelArtDrawingSystemVisual;
+    public static PixelArtDrawSystem Instance { get; private set; }
+
+    public EventHandler OnColorChanged;
+
+    public enum CursorSize
+    {
+        Small,
+        Medium,
+        Large
+    }
+
+    [SerializeField] private GameObject TestMesh;
     [SerializeField] private Texture2D colorTexture2D;
     private GridClass<GridObject> grid;
 
-    //[SerializeField] MeshRenderer TestGrid;
-
+    private float cellSize = 1f;
     private Vector2 colorUV;
+    Vector3 mousePosition;
+    private CursorSize cursorSize;
 
     void Awake()
     {
-        grid = new GridClass<GridObject>(10, 10, 1f, Vector3.zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
-    }
+        Instance = this;
 
-    private void Start()
-    {
-        pixelArtDrawingSystemVisual.SetGrid(grid);
+        grid = new GridClass<GridObject>(100, 100, cellSize, Vector3.zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        colorUV = new Vector2(0, 0);
+        cursorSize = CursorSize.Small;
     }
 
     private void Update()
     {
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
-            Vector3 mousePosition = Utils.GetMouseWorldPosition();
-            grid.GetGridObject(mousePosition).SetColorUV(colorUV);
-        }
+            Vector3 mouseWorldPosition = Utils.GetMouseWorldPosition();
+            int cursorSize = GetCursorSizeInt();
+            for (int x = 0; x < cursorSize; x++)
+            {
+                for (int y = 0; y < cursorSize; y++)
+                {
+                    Vector3 gridWorldPosition = mouseWorldPosition + new Vector3(x, y) * cellSize;
+                    GridObject pixelGridObject = grid.GetGridObject(gridWorldPosition);
+                    if (pixelGridObject != null)
+                    {
+                        pixelGridObject.SetColorUV(colorUV);
+                    }
+                }
+            }
 
-        if(Input.GetKeyDown(KeyCode.T))
-        {
-            colorUV = new Vector2(0, 1);
+            // Color picker
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f))
+            {
+                colorUV = raycastHit.textureCoord;
+                OnColorChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            colorUV = new Vector2(.3f, 1f);
-        }
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            colorUV = new Vector2(0, 0);
-        }
-
-        if(Input.GetKeyDown(KeyCode.P))
-        {
-            SaveImage();
-        }
-        //if (Input.GetKeyDown(KeyCode.O))
-        //{
-        //    LoadImage();
-        //}
     }
 
-    private void SaveImage()
+    public GridClass<GridObject> GetGrid()
+    {
+        return grid;
+    }
+
+    public Vector2 GetColorUV()
+    {
+        return colorUV;
+    }
+
+    public void SetCursorSize(CursorSize cursorSize)
+    {
+        this.cursorSize = cursorSize;
+    }
+
+    private int GetCursorSizeInt()
+    {
+        switch(cursorSize)
+        {
+            default:
+            case CursorSize.Small: return 1;
+            case CursorSize.Medium: return 3;
+            case CursorSize.Large: return 7;
+        }
+    }
+
+    public void SaveImage()
     {
         Texture2D texture2D = new Texture2D(grid.GetWidth(), grid.GetHeigth(), TextureFormat.ARGB32, false);
+        texture2D.filterMode = FilterMode.Point;
 
         for (int x = 0; x < grid.GetWidth(); x++)
         {
@@ -64,31 +102,31 @@ public class PixelArtDrawSystem : MonoBehaviour
             {
                 GridObject gridObject = grid.GetGridObject(x, y);
 
-                int pixelX = (int)(gridObject.GetColorUV().x * colorTexture2D.width);
-                int pixelY = (int)(gridObject.GetColorUV().y * colorTexture2D.height);
-                Color pixelColor = colorTexture2D.GetPixel(pixelX, pixelY);
+                Vector2 pixelCoordinates = gridObject.GetColorUV();
 
-                texture2D.SetPixel(x, y, pixelColor);
+                pixelCoordinates.x *= colorTexture2D.width;
+                pixelCoordinates.y *= colorTexture2D.height;
+
+                texture2D.SetPixel(x, y, colorTexture2D.GetPixel((int)pixelCoordinates.x, (int)pixelCoordinates.y));
             }
         }
 
         texture2D.Apply();
 
-        byte[] byteArray =  texture2D.EncodeToPNG();
-
+        byte[] byteArray = texture2D.EncodeToPNG();
         File.WriteAllBytes(Application.dataPath + "/pixelArt.png", byteArray);
     }
 
-    //private void LoadImage()
-    //{
-    //    Texture2D texture2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-    //    texture2D.filterMode = FilterMode.Point;
+    public void Load()
+    {
+        Texture2D texture2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+        texture2D.filterMode = FilterMode.Point;
 
-    //    byte[] byteArray = File.ReadAllBytes(Application.dataPath + "/pixelart.png");
-    //    texture2D.LoadImage(byteArray);
+        byte[] byteArray = File.ReadAllBytes(Application.dataPath + "/pixelart.png");
+        texture2D.LoadImage(byteArray);
 
-    //    TestGrid.material.mainTexture = texture2D;
-    //}
+        TestMesh.GetComponent<RawImage>().texture = texture2D;
+    }
 
     public class GridObject
     {
@@ -113,6 +151,11 @@ public class PixelArtDrawSystem : MonoBehaviour
         public Vector2 GetColorUV()
         {
             return colorUV;
+        }
+
+        private void TriggerGridObjectChanged()
+        {
+            grid.TriggerGridObjectChanged(x, y);
         }
 
         public override string ToString()

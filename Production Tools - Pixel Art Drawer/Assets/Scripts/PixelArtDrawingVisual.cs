@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class PixelArtDrawingVisual : MonoBehaviour
 {
-    private GridClass<PixelArtDrawSystem.GridObject> grid;
+    [SerializeField] private PixelArtDrawSystem drawPixelArtSystem;
 
+    private GridClass<PixelArtDrawSystem.GridObject> grid;
     private Mesh mesh;
     private bool updateMesh;
 
@@ -13,6 +14,11 @@ public class PixelArtDrawingVisual : MonoBehaviour
     {
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
+    }
+
+    private void Start()
+    {
+        SetGrid(drawPixelArtSystem.GetGrid());
     }
 
     public void SetGrid(GridClass<PixelArtDrawSystem.GridObject> grid)
