@@ -91,7 +91,7 @@ public class PixelArtDrawSystem : MonoBehaviour
         }
     }
 
-    public void SaveImage()
+    public void ExportImage()
     {
         Texture2D texture2D = new Texture2D(grid.GetWidth(), grid.GetHeigth(), TextureFormat.ARGB32, false);
         texture2D.filterMode = FilterMode.Point;
@@ -128,6 +128,7 @@ public class PixelArtDrawSystem : MonoBehaviour
         TestMesh.GetComponent<RawImage>().texture = texture2D;
     }
 
+    [Serializable]
     public class GridObject
     {
         private GridClass<GridObject> grid;
