@@ -69,7 +69,6 @@ public class PixelArtDrawingVisual : MonoBehaviour
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
-
     }
 
 }

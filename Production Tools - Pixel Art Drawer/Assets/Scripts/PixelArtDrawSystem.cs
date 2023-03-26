@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 
 public class PixelArtDrawSystem : MonoBehaviour
 {
+    [SerializeField] private PixelArtDrawingVisual drawPixelArtVisualSystem;
+
     public static PixelArtDrawSystem Instance { get; private set; }
 
     public EventHandler OnColorChanged;
@@ -137,23 +139,28 @@ public class PixelArtDrawSystem : MonoBehaviour
     {
         string filePath = Application.persistentDataPath + "/grid.dat"; 
         GridClass<GridObject> loadedGrid = LoadGrid(filePath);
+
+        drawPixelArtVisualSystem.SetGrid(loadedGrid);
     }
 
     public void SaveGrid(GridClass<GridObject> gridObject, string filePath)
     {
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream stream = new FileStream(filePath, FileMode.Create);
-        formatter.Serialize(stream, gridObject);
-        stream.Close();
+        XmlSerializer serializer = new XmlSerializer(typeof(GridClass<GridObject>));
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            serializer.Serialize(writer, gridObject);
+        }
     }
 
     public GridClass<GridObject> LoadGrid(string filePath)
     {
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream stream = new FileStream(filePath, FileMode.Open);
-        GridClass<GridObject> gridObject = (GridClass<GridObject>)formatter.Deserialize(stream);
-        stream.Close();
-        return gridObject;
+        XmlSerializer serializer = new XmlSerializer(typeof(GridClass<GridObject>));
+        using (StreamReader reader = new StreamReader(filePath))
+        {
+            GridClass<GridObject> gridObject = (GridClass<GridObject>)serializer.Deserialize(reader);
+            return gridObject;
+
+        }
     }
 
     [Serializable]
@@ -164,7 +171,11 @@ public class PixelArtDrawSystem : MonoBehaviour
         private int y;
         private SerializableVector3 colorPosition;
 
-        public GridObject(GridClass<GridObject> grid, int x, int y)
+        public GridObject()
+        {
+        }
+
+        public GridObject(GridClass<GridObject> grid, int x, int y) : this()
         {
             this.grid = grid;
             this.x = x;
