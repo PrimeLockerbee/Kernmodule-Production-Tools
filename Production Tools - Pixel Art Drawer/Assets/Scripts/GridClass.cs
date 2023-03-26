@@ -16,7 +16,6 @@ public class GridClass<GridObject>
         public int y;
     }
 
-
     private int width;
     private int height;
 
