@@ -8,6 +8,7 @@ public static class Utils
 {
     public const int sortingOrderDefault = 5000;
     private static Quaternion[] cachedQuaternionEulerArr;
+
     public static TextMesh CreateWorldText(string text, Transform parent = null, Vector3 localPosition = default(Vector3), int fontSize = 40, Color? color = null, TextAnchor textAnchor = TextAnchor.UpperLeft, TextAlignment textAlignment = TextAlignment.Left, int sortingOrder = sortingOrderDefault)
     {
         if (color == null) color = Color.white;
@@ -30,17 +31,18 @@ public static class Utils
         return textMesh;
     }
 
-    public static Vector3 GetMouseWorldPosition()
+    public static SerializableVector3 GetMouseWorldPosition()
     {
-        Vector3 vec = GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
+        SerializableVector3 mousePosition = new SerializableVector3(Input.mousePosition);
+        SerializableVector3 vec = GetMouseWorldPositionWithZ(mousePosition, Camera.main);
         vec.z = 0f;
         return vec;
     }
 
-    public static Vector3 GetMouseWorldPositionWithZ(Vector3 screenPosition, Camera worldCamera)
+    public static SerializableVector3 GetMouseWorldPositionWithZ(SerializableVector3 screenPosition, Camera worldCamera)
     {
-        Vector3 worldPosition = worldCamera.ScreenToWorldPoint(screenPosition);
-        return worldPosition;
+        Vector3 worldPosition = worldCamera.ScreenToWorldPoint(screenPosition.ToVector3());
+        return new SerializableVector3(worldPosition);
     }
 
 

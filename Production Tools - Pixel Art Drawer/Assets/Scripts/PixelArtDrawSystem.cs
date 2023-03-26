@@ -41,13 +41,13 @@ public class PixelArtDrawSystem : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            Vector3 mouseWorldPosition = Utils.GetMouseWorldPosition();
+            SerializableVector3 mouseWorldPosition = Utils.GetMouseWorldPosition();
             int cursorSize = GetCursorSizeInt();
             for (int x = 0; x < cursorSize; x++)
             {
                 for (int y = 0; y < cursorSize; y++)
                 {
-                    Vector3 gridWorldPosition = mouseWorldPosition + new Vector3(x, y) * cellSize;
+                    SerializableVector3 gridWorldPosition = mouseWorldPosition + new SerializableVector3(new Vector3(x, y) * cellSize);
                     GridObject pixelGridObject = grid.GetGridObject(gridWorldPosition);
                     if (pixelGridObject != null)
                     {
@@ -103,7 +103,7 @@ public class PixelArtDrawSystem : MonoBehaviour
             {
                 GridObject gridObject = grid.GetGridObject(x, y);
 
-                Vector2 pixelCoordinates = gridObject.GetColorPosition();
+                SerializableVector3 pixelCoordinates = gridObject.GetColorPosition();
 
                 pixelCoordinates.x *= colorTexture2D.width;
                 pixelCoordinates.y *= colorTexture2D.height;
@@ -138,7 +138,6 @@ public class PixelArtDrawSystem : MonoBehaviour
         stream.Close();
     }
 
-
     public GridClass<GridObject> LoadGrid(string filePath)
     {
         BinaryFormatter formatter = new BinaryFormatter();
@@ -169,15 +168,15 @@ public class PixelArtDrawSystem : MonoBehaviour
             grid.TriggerGridObjectChanged(x, y);
         }
 
-        public Vector3 GetColorPosition()
+        public SerializableVector3 GetColorPosition()
         {
             if (colorPosition != null)
             {
-                return colorPosition.ToVector3();
+                return colorPosition;
             }
             else
             {
-                return Vector3.zero;
+                return SerializableVector3.Zero;
             }
         }
 
