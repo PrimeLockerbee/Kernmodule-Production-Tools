@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class PixelArtDrawSystem : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class PixelArtDrawSystem : MonoBehaviour
     {
         Instance = this;
 
-        grid = new GridClass<GridObject>(100, 100, cellSize, Vector3.zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        grid = new GridClass<GridObject>(100, 100, cellSize, SerializableVector3.Zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
         colorUV = new Vector2(0, 0);
         cursorSize = CursorSize.Small;
     }
@@ -50,7 +51,7 @@ public class PixelArtDrawSystem : MonoBehaviour
                     GridObject pixelGridObject = grid.GetGridObject(gridWorldPosition);
                     if (pixelGridObject != null)
                     {
-                        pixelGridObject.SetColorUV(colorUV);
+                        pixelGridObject.SetColorPosition(colorUV);
                     }
                 }
             }
@@ -102,7 +103,7 @@ public class PixelArtDrawSystem : MonoBehaviour
             {
                 GridObject gridObject = grid.GetGridObject(x, y);
 
-                Vector2 pixelCoordinates = gridObject.GetColorUV();
+                Vector2 pixelCoordinates = gridObject.GetColorPosition();
 
                 pixelCoordinates.x *= colorTexture2D.width;
                 pixelCoordinates.y *= colorTexture2D.height;
@@ -117,15 +118,34 @@ public class PixelArtDrawSystem : MonoBehaviour
         File.WriteAllBytes(Application.dataPath + "/pixelArt.png", byteArray);
     }
 
-    public void Load()
+    public void SaveGridtoPC()
     {
-        Texture2D texture2D = new Texture2D(grid.GetWidth(), grid.GetHeigth(), TextureFormat.ARGB32, false);
-        texture2D.filterMode = FilterMode.Point;
+        string filePath = Application.persistentDataPath + "/grid.dat";
+        SaveGrid(GetGrid(), filePath); 
+    }
 
-        byte[] byteArray = File.ReadAllBytes(Application.dataPath + "/pixelart.png");
-        texture2D.LoadImage(byteArray);
+    public void LoadGridFromPC()
+    {
+        string filePath = Application.persistentDataPath + "/grid.dat"; 
+        GridClass<GridObject> loadedGrid = LoadGrid(filePath);
+    }
 
-        TestMesh.GetComponent<RawImage>().texture = texture2D;
+    public void SaveGrid(GridClass<GridObject> gridObject, string filePath)
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        FileStream stream = new FileStream(filePath, FileMode.Create);
+        formatter.Serialize(stream, gridObject);
+        stream.Close();
+    }
+
+
+    public GridClass<GridObject> LoadGrid(string filePath)
+    {
+        BinaryFormatter formatter = new BinaryFormatter();
+        FileStream stream = new FileStream(filePath, FileMode.Open);
+        GridClass<GridObject> gridObject = (GridClass<GridObject>)formatter.Deserialize(stream);
+        stream.Close();
+        return gridObject;
     }
 
     [Serializable]
@@ -134,7 +154,7 @@ public class PixelArtDrawSystem : MonoBehaviour
         private GridClass<GridObject> grid;
         private int x;
         private int y;
-        private Vector2 colorUV;
+        private SerializableVector3 colorPosition;
 
         public GridObject(GridClass<GridObject> grid, int x, int y)
         {
@@ -143,15 +163,22 @@ public class PixelArtDrawSystem : MonoBehaviour
             this.y = y;
         }
 
-        public void SetColorUV(Vector2 colorUV)
+        public void SetColorPosition(Vector3 position)
         {
-            this.colorUV = colorUV;
+            this.colorPosition = new SerializableVector3(position);
             grid.TriggerGridObjectChanged(x, y);
         }
 
-        public Vector2 GetColorUV()
+        public Vector3 GetColorPosition()
         {
-            return colorUV;
+            if (colorPosition != null)
+            {
+                return colorPosition.ToVector3();
+            }
+            else
+            {
+                return Vector3.zero;
+            }
         }
 
         private void TriggerGridObjectChanged()
@@ -161,7 +188,7 @@ public class PixelArtDrawSystem : MonoBehaviour
 
         public override string ToString()
         {
-            return ((int)colorUV.x).ToString();
+            return GetColorPosition().ToString();
         }
     }
 }

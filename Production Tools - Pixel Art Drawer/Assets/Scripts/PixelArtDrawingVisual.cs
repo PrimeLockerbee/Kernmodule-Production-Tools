@@ -59,8 +59,8 @@ public class PixelArtDrawingVisual : MonoBehaviour
                 PixelArtDrawSystem.GridObject gridObject = grid.GetGridObject(x, y);
                 Vector2 gridUV00, gridUV11;
 
-                gridUV00 = gridObject.GetColorUV();
-                gridUV11 = gridObject.GetColorUV();
+                gridUV00 = gridObject.GetColorPosition();
+                gridUV11 = gridObject.GetColorPosition();
                 Utils.AddToMeshArrays(vertices, uv, triangles, index, grid.GetWorldPosition(x, y) + quadSize * .5f, 0f, quadSize, gridUV00, gridUV11);
             }
         }
