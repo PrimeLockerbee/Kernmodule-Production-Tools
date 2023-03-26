@@ -6,12 +6,16 @@ using UnityEngine;
 [Serializable]
 public class GridClass<GridObject>
 {
+    [field: NonSerialized]
     public event EventHandler<OnGridObjectChangedEventArgs> OnGridObjectChanged;
+
+    [Serializable]
     public class OnGridObjectChangedEventArgs : EventArgs
     {
         public int x;
         public int y;
     }
+
 
     private int width;
     private int height;
@@ -136,6 +140,3 @@ public class GridClass<GridObject>
         return GetGridObject(x, y);
     }
 }
-
-
-

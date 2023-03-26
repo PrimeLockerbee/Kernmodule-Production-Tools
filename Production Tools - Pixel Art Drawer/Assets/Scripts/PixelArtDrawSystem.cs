@@ -25,7 +25,6 @@ public class PixelArtDrawSystem : MonoBehaviour
 
     private float cellSize = 1f;
     private Vector2 colorUV;
-    Vector3 mousePosition;
     private CursorSize cursorSize;
 
     void Awake()
@@ -39,6 +38,16 @@ public class PixelArtDrawSystem : MonoBehaviour
 
     private void Update()
     {
+        //if (Input.GetKeyDown(KeyCode.O))
+        //{
+        //    SaveGridtoPC();
+        //}
+
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    LoadGridFromPC();
+        //}
+
         if (Input.GetMouseButton(0))
         {
             SerializableVector3 mouseWorldPosition = Utils.GetMouseWorldPosition();
