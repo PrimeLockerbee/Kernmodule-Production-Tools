@@ -22,14 +22,14 @@ public class GridClass<GridObject>
 
     public GridObject[,] gridArray;
 
-    public GridClass(int width, int height, float cellSize, SerializableVector3 originPosition, Func<GridClass<GridObject>, int, int, GridObject> createGridObject)
+    public GridClass(int width, int height, float cellSize, Vector3 originPosition, Func<GridClass<GridObject>, int, int, GridObject> createGridObject)
     {
         this.width = width;
         this.height = height;
 
         this.cellSize = cellSize;
 
-        this.originPosition = originPosition.ToVector3();
+        this.originPosition = originPosition;
 
         gridArray = new GridObject[width, height];
 
@@ -64,12 +64,9 @@ public class GridClass<GridObject>
         //}
     }
 
-    public SerializableVector3 GetWorldPosition(int x, int y)
+    public Vector3 GetWorldPosition(int x, int y)
     {
-        Vector3 temp = new Vector3(x, y) * cellSize + originPosition;
-        SerializableVector3 temp3 = new SerializableVector3(temp);
-
-        return temp3;
+        return new Vector3(x, y) * cellSize + originPosition;
     }
 
     public int GetWidth()
@@ -87,10 +84,10 @@ public class GridClass<GridObject>
         return cellSize;
     }
 
-    public void GetXY(SerializableVector3 worldPosition, out int x, out int y)
+    public void GetXY(Vector3 worldPosition, out int x, out int y)
     {
-        x = Mathf.FloorToInt((worldPosition.ToVector3() - originPosition).x / cellSize);
-        y = Mathf.FloorToInt((worldPosition.ToVector3() - originPosition).y / cellSize);
+        x = Mathf.FloorToInt((worldPosition - originPosition).x / cellSize);
+        y = Mathf.FloorToInt((worldPosition- originPosition).y / cellSize);
     }
 
     public void SetGridObject(int x, int y, GridObject val)
@@ -113,7 +110,7 @@ public class GridClass<GridObject>
         }
     }
 
-    public void SetGridObject(SerializableVector3 worldPosition, GridObject value)
+    public void SetGridObject(Vector3 worldPosition, GridObject value)
     {
         int x, y;
         GetXY(worldPosition, out x, out y);
@@ -132,7 +129,7 @@ public class GridClass<GridObject>
         }
     }
 
-    public GridObject GetGridObject(SerializableVector3 worldPosition)
+    public GridObject GetGridObject(Vector3 worldPosition)
     {
         int x, y;
         GetXY(worldPosition, out x, out y);

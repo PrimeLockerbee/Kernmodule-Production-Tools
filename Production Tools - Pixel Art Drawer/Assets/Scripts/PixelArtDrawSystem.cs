@@ -32,7 +32,7 @@ public class PixelArtDrawSystem : MonoBehaviour
     {
         Instance = this;
 
-        grid = new GridClass<GridObject>(100, 100, cellSize, SerializableVector3.Zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        grid = new GridClass<GridObject>(100, 100, cellSize, Vector3.zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
         colorUV = new Vector2(0, 0);
         cursorSize = CursorSize.Small;
     }
