@@ -21,7 +21,7 @@ public class GridClass<GridObject>
 
     private float cellSize;
 
-    private Vector3 originPosition;
+    private SerializableVector3 originPosition;
 
     public GridObject[][] gridArray;
 
@@ -29,7 +29,7 @@ public class GridClass<GridObject>
     {
     }
 
-    public GridClass(int width, int height, float cellSize, Vector3 originPosition, Func<GridClass<GridObject>, int, int, GridObject> createGridObject) : this()
+    public GridClass(int width, int height, float cellSize, SerializableVector3 originPosition, Func<GridClass<GridObject>, int, int, GridObject> createGridObject) : this()
     {
         this.width = width;
         this.height = height;
@@ -48,7 +48,7 @@ public class GridClass<GridObject>
 
     public SerializableVector3 GetWorldPosition(int x, int y)
     {
-        return new SerializableVector3(new Vector3(x, y) * cellSize + originPosition);
+        return new SerializableVector3(new Vector3(x, y) * cellSize + originPosition.ToVector3());
     }
 
     public int GetWidth()
@@ -68,8 +68,8 @@ public class GridClass<GridObject>
 
     public void GetXY(SerializableVector3 worldPosition, out int x, out int y)
     {
-        x = Mathf.FloorToInt((worldPosition.ToVector3() - originPosition).x / cellSize);
-        y = Mathf.FloorToInt((worldPosition.ToVector3() - originPosition).y / cellSize);
+        x = Mathf.FloorToInt((worldPosition.ToVector3() - originPosition.ToVector3()).x / cellSize);
+        y = Mathf.FloorToInt((worldPosition.ToVector3() - originPosition.ToVector3()).y / cellSize);
     }
 
     public void SetGridObject(int x, int y, GridObject val)

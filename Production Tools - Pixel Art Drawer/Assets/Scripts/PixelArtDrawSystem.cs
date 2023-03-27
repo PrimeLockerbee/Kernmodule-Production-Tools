@@ -5,6 +5,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using System.Xml.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class PixelArtDrawSystem : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class PixelArtDrawSystem : MonoBehaviour
     {
         Instance = this;
 
-        grid = new GridClass<GridObject>(100, 100, cellSize, Vector3.zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        grid = new GridClass<GridObject>(100, 100, cellSize, SerializableVector3.Zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
         colorUV = new Vector2(0, 0);
         cursorSize = CursorSize.Small;
     }
@@ -145,21 +146,20 @@ public class PixelArtDrawSystem : MonoBehaviour
 
     public void SaveGrid(GridClass<GridObject> gridObject, string filePath)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(GridClass<GridObject>));
-        using (StreamWriter writer = new StreamWriter(filePath))
+        BinaryFormatter serializer = new BinaryFormatter();
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
         {
-            serializer.Serialize(writer, gridObject);
+            serializer.Serialize(fileStream, gridObject);
         }
     }
 
     public GridClass<GridObject> LoadGrid(string filePath)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(GridClass<GridObject>));
-        using (StreamReader reader = new StreamReader(filePath))
+        BinaryFormatter serializer = new BinaryFormatter();
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
         {
-            GridClass<GridObject> gridObject = (GridClass<GridObject>)serializer.Deserialize(reader);
+            GridClass<GridObject> gridObject = (GridClass<GridObject>)serializer.Deserialize(fileStream);
             return gridObject;
-
         }
     }
 
