@@ -43,7 +43,7 @@ public class PixelArtDrawingVisual : MonoBehaviour
         }
     }
 
-    private void UpdateVisual()
+    public void UpdateVisual()
     {
         Utils.CreateEmptyMeshArrays(grid.GetWidth() * grid.GetHeigth(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
 
@@ -53,7 +53,6 @@ public class PixelArtDrawingVisual : MonoBehaviour
             {
                 int index = x * grid.GetHeigth() + y;
                 Vector3 quadSize = new Vector3(1, 1) * grid.GetCellSize();
-
 
                 PixelArtDrawSystem.GridObject gridObject = grid.GetGridObject(x, y);
                 Vector2 gridUV00, gridUV11;

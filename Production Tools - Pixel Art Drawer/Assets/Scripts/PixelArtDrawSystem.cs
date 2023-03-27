@@ -141,6 +141,8 @@ public class PixelArtDrawSystem : MonoBehaviour
         string filePath = Application.persistentDataPath + "/grid.dat"; 
         GridClass<GridObject> loadedGrid = LoadGrid(filePath);
 
+        grid = loadedGrid;
+
         drawPixelArtVisualSystem.SetGrid(loadedGrid);
     }
 
