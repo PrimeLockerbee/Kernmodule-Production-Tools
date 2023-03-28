@@ -66,6 +66,23 @@ public class PixelArtDrawSystem : MonoBehaviour
                 OnColorChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            ClearGrid();
+        }
+    }
+
+    public void ClearGrid()
+    {
+        grid = new GridClass<GridObject>(100, 100, cellSize, SerializableVector3.Zero, (GridClass<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        drawPixelArtVisualSystem.SetGrid(grid);
+    }
+
+    public void ClearColor()
+    {
+        colorUV = new Vector2(0, 0);
+        OnColorChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public GridClass<GridObject> GetGrid()
