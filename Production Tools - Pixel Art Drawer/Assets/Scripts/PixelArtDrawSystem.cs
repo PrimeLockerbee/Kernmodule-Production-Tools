@@ -6,6 +6,7 @@ using System.IO;
 using UnityEngine.UI;
 using System.Xml.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using SFB;
 
 public class PixelArtDrawSystem : MonoBehaviour
 {
@@ -106,6 +107,8 @@ public class PixelArtDrawSystem : MonoBehaviour
 
     public void ExportImage()
     {
+        byte[] byteArray;
+
         Texture2D texture2D = new Texture2D(grid.GetWidth(), grid.GetHeigth(), TextureFormat.ARGB32, false);
         texture2D.filterMode = FilterMode.Point;
 
@@ -126,20 +129,20 @@ public class PixelArtDrawSystem : MonoBehaviour
 
         texture2D.Apply();
 
-        byte[] byteArray = texture2D.EncodeToPNG();
-        File.WriteAllBytes(Application.dataPath + "/pixelArt.png", byteArray);
+        byteArray = texture2D.EncodeToJPG();
+        File.WriteAllBytes(Application.dataPath + "/pixelArt.jpg", byteArray);
     }
 
     public void SaveGridtoPC()
     {
-        string filePath = Application.persistentDataPath + "/grid.dat";
+        string filePath = StandaloneFileBrowser.SaveFilePanel("Title", "", "sample", "dat");
         SaveGrid(GetGrid(), filePath); 
     }
 
     public void LoadGridFromPC()
     {
-        string filePath = Application.persistentDataPath + "/grid.dat"; 
-        GridClass<GridObject> loadedGrid = LoadGrid(filePath);
+        string[] filePath = StandaloneFileBrowser.OpenFilePanel("Title", "", "dat", false);
+        GridClass<GridObject> loadedGrid = LoadGrid(filePath[0]);
 
         grid = loadedGrid;
 
