@@ -23,7 +23,6 @@ public class PixelArtDrawSystem : MonoBehaviour
         Large
     }
 
-    [SerializeField] private GameObject TestMesh;
     [SerializeField] private Texture2D colorTexture2D;
     private GridClass<GridObject> grid;
 
@@ -42,16 +41,6 @@ public class PixelArtDrawSystem : MonoBehaviour
 
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.O))
-        //{
-        //    SaveGridtoPC();
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.P))
-        //{
-        //    LoadGridFromPC();
-        //}
-
         if (Input.GetMouseButton(0))
         {
             SerializableVector3 mouseWorldPosition = Utils.GetMouseWorldPosition();
