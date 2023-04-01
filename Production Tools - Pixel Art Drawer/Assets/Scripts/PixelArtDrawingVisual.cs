@@ -71,16 +71,3 @@ public class PixelArtDrawingVisual : MonoBehaviour
     }
 
 }
-
-public static class VectorExtensions
-{
-    public static Vector3 ToVector3(this SerializableVector3 vec)
-    {
-        return new Vector3(vec.x, vec.y, vec.z);
-    }
-
-    public static Vector2 ToVector2(this SerializableVector3 vec)
-    {
-        return new Vector2(vec.x, vec.y);
-    }
-}
