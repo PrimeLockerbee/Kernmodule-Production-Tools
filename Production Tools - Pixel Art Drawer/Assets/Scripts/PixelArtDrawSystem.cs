@@ -129,14 +129,16 @@ public class PixelArtDrawSystem : MonoBehaviour
                 pixelCoordinates.x *= colorTexture2D.width;
                 pixelCoordinates.y *= colorTexture2D.height;
 
-                texture2D.SetPixel(x, y, colorTexture2D.GetPixel((int)pixelCoordinates.x, (int)pixelCoordinates.y));
+                Color pixelColor = colorTexture2D.GetPixel((int)pixelCoordinates.x, (int)pixelCoordinates.y);
+                pixelColor.a = 1.0f;
+                texture2D.SetPixel(x, y, pixelColor);
             }
         }
 
         texture2D.Apply();
 
-        byteArray = texture2D.EncodeToJPG();
-        File.WriteAllBytes(Application.dataPath + "/pixelArt.jpg", byteArray);
+        byteArray = texture2D.EncodeToPNG();
+        File.WriteAllBytes(StandaloneFileBrowser.SaveFilePanel("Title", "", "sample", "png"), byteArray);
     }
 
     public void SaveGridtoPC()
